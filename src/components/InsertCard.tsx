@@ -1,24 +1,24 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { motion } from 'framer-motion';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
-import { Button } from '@/components/ui/button';
-import { Label } from '@/components/ui/label';
-import { isValidCardNumber } from '@/services/api';
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { motion } from "framer-motion";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { Label } from "@/components/ui/label";
+import { isValidCardNumber } from "@/lib/utils";
 
 const InsertCard: React.FC = () => {
-  const [cardNumber, setCardNumber] = useState('');
-  const [error, setError] = useState('');
+  const [cardNumber, setCardNumber] = useState("");
+  const [error, setError] = useState("");
   const navigate = useNavigate();
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (isValidCardNumber(cardNumber)) {
-      localStorage.setItem('cardNumber', cardNumber);
-      navigate('/enter-pin');
+      localStorage.setItem("cardNumber", cardNumber);
+      navigate("/enter-pin");
     } else {
-      setError('Invalid card number. Please try again.');
+      setError("Invalid card number. Please try again.");
     }
   };
 
@@ -31,7 +31,9 @@ const InsertCard: React.FC = () => {
     >
       <Card className="w-full max-w-md">
         <CardHeader>
-          <CardTitle className="text-2xl font-bold text-center">Insert Card</CardTitle>
+          <CardTitle className="text-2xl font-bold text-center">
+            Insert Card
+          </CardTitle>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-4">
@@ -43,14 +45,18 @@ const InsertCard: React.FC = () => {
                 placeholder="Enter 16-digit card number"
                 value={cardNumber}
                 onChange={(e) => {
-                  setCardNumber(e.target.value.replace(/\D/g, '').slice(0, 16));
-                  setError('');
+                  setCardNumber(e.target.value.replace(/\D/g, "").slice(0, 19));
+                  setError("");
                 }}
                 required
               />
             </div>
             {error && <p className="text-red-500 text-sm">{error}</p>}
-            <Button type="submit" className="w-full" disabled={cardNumber.length !== 16}>
+            <Button
+              type="submit"
+              className="w-full"
+              disabled={cardNumber.length !== 19}
+            >
               Insert Card
             </Button>
           </form>

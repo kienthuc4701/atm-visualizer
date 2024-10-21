@@ -6,37 +6,6 @@ const api = axios.create({
   withCredentials: true,
 });
 
-
-// Utility functions for validation
-export const isValidCardNumber = (cardNumber: string): boolean => {
-  // Implement Luhn algorithm for card number validation
-  const digits = cardNumber.split('').map(Number);
-  let sum = 0;
-  let isEven = false;
-  const len = digits.length;
-
-  for (let i = len - 1; i >= 0; i--) {
-    let digit = digits[i];
-
-    if (isEven) {
-      digit *= 2;
-      if (digit > 9) {
-        digit -= 9;
-      }
-    }
-    sum += digit;
-    isEven = !isEven;
-  }
-
-  return sum % 10 === 0;
-};
-
-export const isValidPin = (pin: string): boolean => {
-  // Check if PIN is exactly 4 digits
-  return /^\d{4}$/.test(pin);
-};
-
-
 let isRefreshing = false;
 let refreshSubscribers: ((token: string) => void)[] = [];
 

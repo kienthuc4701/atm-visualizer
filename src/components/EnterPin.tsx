@@ -10,15 +10,15 @@ import { useAuth } from "@/contexts/AuthContext";
 const EnterPin: React.FC = () => {
   const [pin, setPin] = useState("");
   const [error, setError] = useState("");
+  const { login, token } = useAuth();
   const navigate = useNavigate();
-  const { login } = useAuth();
 
   useEffect(() => {
     const cardNumber = localStorage.getItem("cardNumber");
     if (!cardNumber) {
       navigate("/insert-card");
     }
-  }, [navigate]);
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

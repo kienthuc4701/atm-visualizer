@@ -23,7 +23,7 @@ const App: React.FC = () => {
           <Route path="/enter-pin" element={<EnterPin />} />
           {/* Private Routes */}
           <Route element={<PrivateRoute />}>
-            <Route element={<TransactionSelector />}/>
+            <Route path="/select-transaction"  element={<TransactionSelector />}/>
             <Route path="/withdraw" element={<Withdraw />} />
             <Route path="/deposit" element={<Deposit />} />
           </Route>
