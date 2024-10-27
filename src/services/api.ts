@@ -9,34 +9,7 @@ const api = axios.create({
 let isRefreshing = false;
 let refreshSubscribers: ((token: string) => void)[] = [];
 
-const subscribeTokenRefresh = (cb: (token: string) => void) => {
-  refreshSubscribers.push(cb);
-}
 
-const onTokenRefreshed = (token: string) => {
-  refreshSubscribers.map(cb => cb(token));
-  refreshSubscribers = [];
-}
-
-const setAuthToken = (token: string) => {
-  if (token) {
-    setCookie(`${import.meta.env.VITE_ATM_TOKEN}`, token, 7, '/', `.${import.meta.env.VITE_BASE_FRONTEND_URL}`);
-  } else {
-    deleteCookie(`${import.meta.env.VITE_ATM_TOKEN}`, '/', `.${import.meta.env.VITE_BASE_FRONTEND_URL}`);
-  }
-}
-
-const refreshAuthToken = async () => {
-  try {
-    const response = await axios.post(`${import.meta.env.VITE_BASE_API_URL}/refresh-token`, {}, { withCredentials: true });
-    const { token } = response.data;
-    setAuthToken(token);
-    return token;
-  } catch (error) {
-    deleteCookie(`${import.meta.env.VITE_ATM_TOKEN}`, '/', `.${import.meta.env.VITE_BASE_FRONTEND_URL}`);
-    throw error;
-  }
-}
 
 // Request interceptor
 api.interceptors.request.use(
@@ -59,38 +32,38 @@ api.interceptors.response.use(
   },
   async (error) => {
     const originalRequest = error.config;
-    if (error.response?.status === 401 && !originalRequest._retry) {
-      if (isRefreshing) {
-        return new Promise((resolve) => {
-          subscribeTokenRefresh((token: string) => {
-            originalRequest.headers['Authorization'] = 'Bearer ' + token;
-            resolve(api(originalRequest));
-          });
-        });
-      }
+    // if (error.response?.status === 401 && !originalRequest._retry) {
+    //   if (isRefreshing) {
+    //     return new Promise((resolve) => {
+    //       subscribeTokenRefresh((token: string) => {
+    //         originalRequest.headers['Authorization'] = 'Bearer ' + token;
+    //         resolve(api(originalRequest));
+    //       });
+    //     });
+    //   }
 
-      originalRequest._retry = true;
-      isRefreshing = true;
+    //   originalRequest._retry = true;
+    //   isRefreshing = true;
 
-      try {
-        const newToken = await refreshAuthToken();
-        originalRequest.headers['Authorization'] = 'Bearer ' + newToken;
-        onTokenRefreshed(newToken);
-        return api(originalRequest);
-      } catch (refreshError) {
-        // Handle refresh token error (e.g., redirect to login)
-        return Promise.reject(refreshError);
-      } finally {
-        isRefreshing = false;
-      }
-    }
+    //   try {
+    //     const newToken = await refreshAuthToken();
+    //     originalRequest.headers['Authorization'] = 'Bearer ' + newToken;
+    //     onTokenRefreshed(newToken);
+    //     return api(originalRequest);
+    //   } catch (refreshError) {
+    //     // Handle refresh token error (e.g., redirect to login)
+    //     return Promise.reject(refreshError);
+    //   } finally {
+    //     isRefreshing = false;
+    //   }
+    // }
     return Promise.reject(error);
   }
 );
 
-export const login = async (cardNumber: string, pin: string) => {
+export const login = async (cardNumber: string, pin: number) => {
   const response = await api.post('/login', { cardNumber, pin });
-  setAuthToken(response.data.token);
+  // setAuthToken(response.data.token);
   return response.data;
 };
 
@@ -99,8 +72,8 @@ export const logout = async () => {
   deleteCookie(`${import.meta.env.VITE_ATM_TOKEN}`, '/', `.${import.meta.env.VITE_BASE_FRONTEND_URL}`);
 };
 
-export const getBalance = async () => {
-  const response = await api.get('/balance');
+export const getBalance = async (type:string) => {
+  const response = await api.get(`/auth/${type}`);
   return response.data;
 };
 

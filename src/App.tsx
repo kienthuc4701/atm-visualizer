@@ -11,6 +11,7 @@ import Withdraw from "./components/Withdraw";
 import Deposit from "./components/Deposit";
 import { PrivateRoute } from "./components/PrivateRoute";
 import TransactionSelector from "./components/TransactionSelector";
+import Balance from "./components/Balance";
 
 const App: React.FC = () => {
   return (
@@ -25,6 +26,7 @@ const App: React.FC = () => {
           <Route element={<PrivateRoute />}>
             <Route path="/select-transaction"  element={<TransactionSelector />}/>
             <Route path="/withdraw" element={<Withdraw />} />
+            <Route path="/balance" element={<Balance />} />
             <Route path="/deposit" element={<Deposit />} />
           </Route>
            {/* Catch-all route for undefined paths */}

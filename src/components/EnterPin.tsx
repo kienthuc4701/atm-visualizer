@@ -8,9 +8,9 @@ import { Label } from "@/components/ui/label";
 import { useAuth } from "@/contexts/AuthContext";
 
 const EnterPin: React.FC = () => {
-  const [pin, setPin] = useState("");
+  const [pin, setPin] = useState<string>("");
   const [error, setError] = useState("");
-  const { login, token } = useAuth();
+  const { login } = useAuth();
   const navigate = useNavigate();
 
   useEffect(() => {
